@@ -27,10 +27,8 @@ const login = async (userData: any) => {
     where: { email: userData.email },
   });
   if (!user) throw new Error("User not found");
-
   const validPassword = await bcrypt.compare(userData.password, user.password);
   if (!validPassword) throw new Error("Invalid credentials");
-
   return authResponse(user);
 };
 

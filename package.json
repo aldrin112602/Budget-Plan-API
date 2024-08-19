@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "git:push": "git add . && git commit -m \"Push Changes\" && git push",
+    "push": "git add . && git commit -m \"Push Changes\" && git push",
     "start": "node dist/index.js",
     "serve": "nodemon --exec ts-node src/index.ts",
     "build": "tsc"
