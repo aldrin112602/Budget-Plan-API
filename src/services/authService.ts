@@ -1,9 +1,15 @@
 import prisma from "../config/prisma";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
 const register = async (userData: any) => {
+  const existingUser = await prisma.user.findUnique({
+    where: { email: userData.email },
+  });
+  if (existingUser) throw new Error("Email already in use");
+
   const salt = 10;
   const hashedPassword = await bcrypt.hash(userData.password, salt);
   const user = await prisma.user.create({
@@ -34,7 +40,6 @@ const authResponse = async (user: any) => {
     expiresIn: "1h",
   });
 
-  // Return token including the user
   return {
     token,
     user,
