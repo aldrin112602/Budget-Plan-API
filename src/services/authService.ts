@@ -1,27 +1,45 @@
-import prisma from '../config/prisma';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import prisma from "../config/prisma";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
 const register = async (userData: any) => {
-  const hashedPassword = await bcrypt.hash(userData.password, 10);
+  const salt = 10;
+  const hashedPassword = await bcrypt.hash(userData.password, salt);
   const user = await prisma.user.create({
     data: {
       ...userData,
       password: hashedPassword,
     },
   });
-  return user;
+
+  return authResponse(user);
 };
 
 const login = async (userData: any) => {
-  const user = await prisma.user.findUnique({ where: { email: userData.email } });
-  if (!user) throw new Error('User not found');
+  const user = await prisma.user.findUnique({
+    where: { email: userData.email },
+  });
+  if (!user) throw new Error("User not found");
 
   const validPassword = await bcrypt.compare(userData.password, user.password);
-  if (!validPassword) throw new Error('Invalid credentials');
+  if (!validPassword) throw new Error("Invalid credentials");
 
-  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
-  return token;
+  return authResponse(user);
 };
+
+
+const authResponse = async (user: any) => {
+  const token = await jwt.sign({ id: user.id }, JWT_SECRET, {
+    expiresIn: "1h",
+  });
+
+  // Return token including the user
+  return {
+    token,
+    user,
+  };
+
+}
 
 export default { register, login };
