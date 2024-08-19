@@ -1,13 +1,15 @@
+
 import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
 
 const app = express();
 
-// Middleware
-app.use(express.json());
+app.use(cors());
+app.use(bodyParser.json());
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 

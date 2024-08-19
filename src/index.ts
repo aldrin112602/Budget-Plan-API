@@ -1,17 +1,8 @@
-import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient()
+import app from './app';
 
-async function main() {
-  const allUsers = await prisma.user.findMany()
-  console.log(allUsers)
-}
+const PORT = process.env.PORT || 3000;
 
-main()
-  .catch(async (e) => {
-    console.error(e)
-    process.exit(1)
-  })
-  .finally(async () => {
-    await prisma.$disconnect()
-  })
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
