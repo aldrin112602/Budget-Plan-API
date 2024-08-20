@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getUserProfile } from '../controllers/userController';
+import { getUserProfile, setUserProfile } from '../controllers/userController';
 import authMiddleware from '../middlewares/authMiddleware';
 
 const router = Router();
@@ -11,5 +11,6 @@ const router = Router();
  * Content-Type: application/json
  */
 router.get('/profile', authMiddleware, getUserProfile);
+router.post('/profile', authMiddleware, setUserProfile);
 
 export default router;
