@@ -11,9 +11,9 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // API endpoints ( Port 8000 || 3000 )
-// http://localhost:8000/api/auth/login
-// http://localhost:8000/api/auth/register
-// http://localhost:8000/api/user/profile
+// http://localhost:8000/api/auth/login     [POST]
+// http://localhost:8000/api/auth/register  [POST]
+// http://localhost:8000/api/user/profile   [POST, GET]
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);

@@ -1,32 +1,36 @@
 import prisma from "../config/prisma";
+import saveFile from "../utils/saveFile";
 
-// Function to get a user by ID
 const getUserById = async (id: string) => {
   const user = await prisma.user.findUnique({ where: { id } });
   if (!user) throw new Error("User not found");
   return user;
-};
+};  
 
-// Function to update a user profile
-const setUserProfile = async (body: any) => {
-  const { userId, profileData } = body;
 
-  // Find the user by ID
+const setUserProfile = async (body: any, file?: Express.Multer.File) => {
+  const { userId } = body;
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
 
-  // Check if the user has a profile
+  let profileData: any = { };
+
+  if (file) {
+    const avatarUrl = saveFile(file);
+    profileData.avatarUrl = avatarUrl;
+  }
+
   const existingProfile = await prisma.profile.findUnique({ where: { userId } });
 
-  // Update the profile if it exists, otherwise create a new one
-  let updatedProfile;
+  let userProfile;
+
   if (existingProfile) {
-    updatedProfile = await prisma.profile.update({
+    userProfile = await prisma.profile.update({
       where: { userId },
       data: profileData,
     });
   } else {
-    updatedProfile = await prisma.profile.create({
+    userProfile = await prisma.profile.create({
       data: {
         userId,
         ...profileData,
@@ -34,7 +38,8 @@ const setUserProfile = async (body: any) => {
     });
   }
 
-  return updatedProfile;
+  return userProfile;
 };
+
 
 export default { getUserById, setUserProfile };
