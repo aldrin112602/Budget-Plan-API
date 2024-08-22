@@ -9,11 +9,12 @@ const getUserById = async (id: string) => {
 
 
 const setUserProfile = async (body: any, file?: Express.Multer.File) => {
-  const { userId } = body;
+  const { userId, bio } = body;
+
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
 
-  let profileData: any = { };
+  let profileData: any = { bio };
 
   if (file) {
     const avatarUrl = saveFile(file);
@@ -38,7 +39,7 @@ const setUserProfile = async (body: any, file?: Express.Multer.File) => {
     });
   }
 
-  return userProfile;
+  return { user, userProfile };
 };
 
 
